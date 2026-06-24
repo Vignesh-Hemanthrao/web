@@ -11,9 +11,11 @@ hamburger.addEventListener('click', () => {
 document.addEventListener('scroll', () => {
 	var scroll_position = window.scrollY;
 	if (scroll_position > 250) {
-		header.style.backgroundColor = '#29323c';
+		header.style.backgroundColor = 'rgba(5,10,16,0.98)';
+		header.style.borderBottomColor = 'rgba(0,212,255,0.28)';
 	} else {
-		header.style.backgroundColor = 'transparent';
+		header.style.backgroundColor = 'rgba(5,10,16,0.82)';
+		header.style.borderBottomColor = 'rgba(0,212,255,0.12)';
 	}
 });
 
@@ -210,32 +212,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Enhanced hover effects for service items
-document.querySelectorAll('.service-item').forEach(item => {
-    item.addEventListener('mouseenter', function() {
-        this.style.transform = 'translateY(-15px) scale(1.02)';
+// Skill bar animation — trigger when section enters viewport
+const skillBarObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const fills = entry.target.querySelectorAll('.skill-bar-fill');
+            fills.forEach(fill => {
+                const target = fill.style.getPropertyValue('--progress') || '0%';
+                fill.style.width = target;
+            });
+            skillBarObserver.unobserve(entry.target);
+        }
     });
-    
-    item.addEventListener('mouseleave', function() {
-        this.style.transform = 'translateY(0) scale(1)';
-    });
+}, { threshold: 0.2 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const skillsSection = document.querySelector('#services .services');
+    if (skillsSection) skillBarObserver.observe(skillsSection);
 });
-
-// Testimonial carousel functionality (optional)
-let currentTestimonial = 0;
-const testimonials = document.querySelectorAll('.testimonial-item');
-
-function showTestimonial(index) {
-    testimonials.forEach((testimonial, i) => {
-        testimonial.style.display = i === index ? 'block' : 'none';
-    });
-}
-
-// Auto-rotate testimonials on mobile
-if (window.innerWidth <= 768) {
-    setInterval(() => {
-        currentTestimonial = (currentTestimonial + 1) % testimonials.length;
-        showTestimonial(currentTestimonial);
-    }, 5000);
-}
 
